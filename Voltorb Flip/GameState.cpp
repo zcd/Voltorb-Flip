@@ -1,9 +1,7 @@
 #include <iostream>
 #include <iomanip>
-#include <stdlib.h>
 #include <time.h>
 #include "GameState.h"
-#include "VFException.h"
 
 /*
 The GameState class constructor creates a GameState object of a given level.
@@ -163,7 +161,7 @@ void GameState::setup_board(void)
         voltorbs = 10;
     else
         voltorbs = level + 4 + rand()%2;
-    for (int k = 0; k < voltorbs; k++) { 
+    for (int k = 0; k <= voltorbs; k++) { 
         do {
             i = rand() % height;
             j = rand() % width;

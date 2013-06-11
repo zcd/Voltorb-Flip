@@ -1,5 +1,6 @@
 #include <list>
 #include "Move.h"
+#include "VFException.h"
 #pragma once
 
 
@@ -8,11 +9,11 @@ The GameState class defines the contents of a game of VoltorbFlip.  It stores
 information about the board for gameplay and display purposes.
 */
 
-const int One = 1;
-const int Two = 2;
-const int Three = 3;
-const int Voltorb = -1;
-const int Null = 0;
+#define One     1
+#define Two     2
+#define Three   3
+#define Voltorb -1
+#define Null    0
 
 const int height = 5;
 const int width = 5;

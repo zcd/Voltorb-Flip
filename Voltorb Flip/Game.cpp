@@ -1,5 +1,3 @@
-#include "Human.h"
-#include "VFException.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
@@ -10,6 +8,15 @@ Game::Game(std::string name)
     this->player = new Human(name);
     this->level = player->get_level();
     this->state = new GameState();
+
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            markers_1[i][j] = false;
+            markers_2[i][j] = false;
+            markers_3[i][j] = false;
+            markers_v[i][j] = false;
+        }
+    }
 }
 
 Game::~Game(void)
@@ -25,23 +32,22 @@ bool Game::handle_input(int i, int j)
 {
     Move move(i, j);
     try {
-        std::stringstream s;
         bool lost = state->do_move(move);
         if (lost) {
             player->set_level(max(1, min(state->get_cards_flipped(), player->get_level())));
             this->win = false;
+            reveal_board();
             return true;
         } else if (state->level_done()) {
-            player->add_score(state->get_points());
             if (player->get_level() < 7)
                 player->level_up();
             this->win = true;
+            reveal_board();
             return true;
         }
-        return false;
     } catch (VFException e) {
-        return false;
     }
+    return false;
 }
 
 /*
@@ -50,9 +56,18 @@ level.  Returns true if and only if the last refresh was for a winning move.
 */
 bool Game::refresh_game_state(void)
 {
+    player->add_score(state->get_points());
     delete this->state;
     this->state = new GameState(player->get_level());
     this->level = player->get_level();
+    for (int i = 0; i < width; i++) {
+        for (int j = 0; j < height; j++) {
+            markers_1[i][j] = false;
+            markers_2[i][j] = false;
+            markers_3[i][j] = false;
+            markers_v[i][j] = false;
+        }
+    }
     return win;
 }
 
@@ -84,6 +99,13 @@ info Game::get_row_info(int i) const
 info Game::get_col_info(int j) const
 {
     return this->state->row[j];
+}
+
+void Game::reveal_board(void)
+{
+    for (int i = 0; i < width; i++)
+        for (int j = 0; j < height; j++)
+            state->board[i][j].flipped = true;
 }
 
 /*
